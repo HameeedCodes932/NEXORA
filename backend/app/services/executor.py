@@ -13,7 +13,7 @@ from app.services.util import dump_model
 class SandboxExecutor:
     def __init__(self, db: Database, sandbox_root: Path):
         self.db = db
-        self.sandbox_root = Path(sandbox_root)
+        self.sandbox_root = Path(sandbox_root).resolve()
 
     def approve_plan(self, plan_id: str, approved_by: str = "reviewer@nexora.ai") -> list[ActivityItem]:
         assert_approved(True)

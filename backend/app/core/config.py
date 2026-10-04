@@ -1,5 +1,7 @@
 from functools import lru_cache
+import os
 from pathlib import Path
+import tempfile
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -21,6 +23,11 @@ class Settings(BaseSettings):
 
     @property
     def sandbox_root(self) -> Path:
+        runtime_dir = os.getenv("NEXORA_RUNTIME_DIR")
+        if runtime_dir:
+            return Path(runtime_dir) / "sandbox"
+        if os.getenv("VERCEL"):
+            return Path(tempfile.gettempdir()) / "nexora" / "sandbox"
         return self.backend_root / "sandbox"
 
     @property

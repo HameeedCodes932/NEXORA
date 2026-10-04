@@ -13,6 +13,16 @@ db = Database(settings.database_path)
 embedding_engine = EmbeddingEngine(settings.embeddings_mode)
 scanner = WorkspaceScanner(db, settings.sandbox_root, embedding_engine)
 search_service = SemanticSearchService(db, embedding_engine)
+_workspace_ready = False
+
+
+def ensure_workspace_ready() -> None:
+    global _workspace_ready
+    if _workspace_ready and settings.database_path.exists():
+        return
+    db.init()
+    scanner.ensure_seeded()
+    _workspace_ready = True
 
 
 def create_app() -> FastAPI:
@@ -28,8 +38,7 @@ def create_app() -> FastAPI:
 
     @app.on_event("startup")
     def startup() -> None:
-        db.init()
-        scanner.ensure_seeded()
+        ensure_workspace_ready()
 
     return app
 

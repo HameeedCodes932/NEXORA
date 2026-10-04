@@ -15,14 +15,16 @@ router = APIRouter(prefix="/api")
 
 
 def get_db() -> Database:
-    from app.main import db
+    from app.main import db, ensure_workspace_ready
 
+    ensure_workspace_ready()
     return db
 
 
 def get_search() -> SemanticSearchService:
-    from app.main import search_service
+    from app.main import ensure_workspace_ready, search_service
 
+    ensure_workspace_ready()
     return search_service
 
 
@@ -44,8 +46,9 @@ def login(payload: LoginRequest, settings: Settings = Depends(get_settings)) -> 
 
 @router.get("/health")
 def health() -> dict:
-    from app.main import embedding_engine
+    from app.main import embedding_engine, ensure_workspace_ready
 
+    ensure_workspace_ready()
     return {
         "api": "Online",
         "workspace": "Indexed",

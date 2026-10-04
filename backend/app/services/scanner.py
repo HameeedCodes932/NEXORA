@@ -14,7 +14,7 @@ from app.services.safety import ALLOWED_EXTENSIONS, sandbox_path
 class WorkspaceScanner:
     def __init__(self, db: Database, sandbox_root: Path, embeddings: EmbeddingEngine):
         self.db = db
-        self.sandbox_root = Path(sandbox_root)
+        self.sandbox_root = Path(sandbox_root).resolve()
         self.embeddings = embeddings
 
     def ensure_seeded(self) -> None:
